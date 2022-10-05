@@ -82,12 +82,12 @@ function generateTournament() {
             let team1 = teamsArr.find((team) => team.id == teams[0]);
             let team2 = teamsArr.find((team) => team.id == teams[1]);
             let gameDiv = document.createElement("div");
-            gameDiv.innerHTML = team1.name + " - " + team2.name;
+            gameDiv.innerHTML = team1.name + " - " + team2.name + "<div><input class='score-input' type='text' data-name='score1'> : <input class='score-input' type='text' data-name='score2'></div>";
             gameDiv.classList.add("game");
             gameDiv.dataset.team1Id = team1.id;
             gameDiv.dataset.team2Id = team2.id;
             gameDiv.dataset.team1Score = 1;
-            gameDiv.dataset.team2Score = 0;
+            gameDiv.dataset.team2Score = 1;
 
             roundDiv.appendChild(gameDiv);
 
@@ -119,6 +119,8 @@ function generateTournament() {
         team2.games++;
       }
     }
+
+    console.log(teamsArr);
   }
 
   function shuffleArray(array) {
@@ -131,8 +133,25 @@ function generateTournament() {
     return array;
   }
 
+  function getScores() {
+    let inputScore = document.querySelectorAll('.score-input');
+
+    for(let i = 0; i < inputScore.length; i++) {
+        inputScore[i].addEventListener('input', function(ev) {
+            let game = ev.currentTarget.closest('.game');
+            if(ev.currentTarget.dataset.name == 'score1') {
+                game.dataset.team1Score = ev.target.input;
+            } else {
+                game.dataset.team2Score = ev.target.input;
+            }
+            calculateScores();
+        });
+    }
+  }
+
   generateRoundsDisplay();
   calculateScores();
+  getScores();
 }
 
 setTimeout(function () {
