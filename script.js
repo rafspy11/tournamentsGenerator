@@ -86,8 +86,8 @@ function generateTournament() {
             gameDiv.classList.add("game");
             gameDiv.dataset.team1Id = team1.id;
             gameDiv.dataset.team2Id = team2.id;
-            gameDiv.dataset.team1Score = 1;
-            gameDiv.dataset.team2Score = 1;
+            gameDiv.dataset.team1Score = -1;
+            gameDiv.dataset.team2Score = -1;
 
             roundDiv.appendChild(gameDiv);
 
@@ -99,6 +99,12 @@ function generateTournament() {
   }
 
   function calculateScores() {
+    teamsArr.map(function(t) {
+      t.points = 0;
+      t.games = 0;
+      return t;
+    });
+
     let games = document.querySelectorAll(".game");
 
     for (let i = 0; i < games.length; i++) {
@@ -140,18 +146,30 @@ function generateTournament() {
         inputScore[i].addEventListener('input', function(ev) {
             let game = ev.currentTarget.closest('.game');
             if(ev.currentTarget.dataset.name == 'score1') {
-                game.dataset.team1Score = ev.target.input;
+                game.dataset.team1Score = parseInt(ev.currentTarget.value);
             } else {
-                game.dataset.team2Score = ev.target.input;
+                game.dataset.team2Score = parseInt(ev.currentTarget.value);
             }
-            calculateScores();
+            // calculateScores();
         });
     }
+  }
+
+  function calculateButton() {
+    let tournamentDiv = document.getElementById("tournament");
+    let calculateButton = document.createElement('button');
+    calculateButton.innerHTML = "Przelicz wyniki";
+    calculateButton.dataset.id = "calculate";
+    calculateButton.addEventListener('click', function() {
+      calculateScores();
+    })
+    tournamentDiv.appendChild(calculateButton);
   }
 
   generateRoundsDisplay();
   calculateScores();
   getScores();
+  calculateButton();
 }
 
 setTimeout(function () {
