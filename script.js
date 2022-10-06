@@ -74,16 +74,16 @@ function generateTournament() {
     
     for(let i = 0; i < scheduleArr.length; i++) {
         let roundDiv = document.createElement("div");
-        roundDiv.innerHTML = "Kolejka " + (i + 1);
-        roundDiv.classList.add("round");
+        roundDiv.innerHTML = "<h4>Kolejka " + (i + 1) + "</h4>";
+        roundDiv.classList.add("round", "mb-3");
 
         for(let j = 0; j < scheduleArr[i].length; j++) {
             let teams = scheduleArr[i][j];
             let team1 = teamsArr.find((team) => team.id == teams[0]);
             let team2 = teamsArr.find((team) => team.id == teams[1]);
             let gameDiv = document.createElement("div");
-            gameDiv.innerHTML = team1.name + " - " + team2.name + "<div><input class='score-input' type='text' data-name='score1'> : <input class='score-input' type='text' data-name='score2'></div>";
-            gameDiv.classList.add("game");
+            gameDiv.innerHTML = "<div class='col'>" + team1.name + " - " + team2.name + "</div><div class='col'><input class='score-input' type='text' data-name='score1'> : <input class='score-input' type='text' data-name='score2'></div>";
+            gameDiv.classList.add("game", "mb-2", "row", "align-items-center");
             gameDiv.dataset.team1Id = team1.id;
             gameDiv.dataset.team2Id = team2.id;
             gameDiv.dataset.team1Score = -1;
