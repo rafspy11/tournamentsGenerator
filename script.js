@@ -101,18 +101,22 @@ function generateTournament() {
         gameDiv.dataset.team2Score = -1;
 
         roundDiv.appendChild(gameDiv);
-
-        console.log(scheduleArr[i][j]);
       }
 
       tournamentDiv.appendChild(roundDiv);
     }
+
+    let tableDiv = document.createElement("div");
+    tableDiv.classList.add('table-scores');
+    tournamentDiv.appendChild(tableDiv);
   }
 
   function calculateScores() {
     teamsArr.map(function (t) {
       t.points = 0;
       t.games = 0;
+      t.bs = 0;
+      t.bl = 0;
       return t;
     });
 
@@ -123,7 +127,7 @@ function generateTournament() {
       let score2 = parseInt(games[i].dataset.team2Score);
       let team1 = teamsArr.find((team) => team.id == games[i].dataset.team1Id);
       let team2 = teamsArr.find((team) => team.id == games[i].dataset.team2Id);
-      if (score1 && score2 >= 0) {
+      if ((score1 && score2) >= 0) {
         if (score1 > score2) {
           team1.points += 3;
         } else if (score1 < score2) {
@@ -134,12 +138,16 @@ function generateTournament() {
         }
         team1.games++;
         team2.games++;
+        team1.bs += score1;
+        team2.bs += score2;
+        team1.bl += score2;
+        team2.bl += score1;
       }
     }
 
-    tablesDisplay();
+    teamsArr = sortScores(teamsArr);
 
-    // console.log(teamsArr);
+    tablesDisplay();
   }
 
   function shuffleArray(array) {
@@ -180,13 +188,12 @@ function generateTournament() {
   }
 
   function tablesDisplay() {
-    let tournamentDiv = document.getElementById("tournament");
     let currTable = document.querySelector(".table-scores");
+    
     if(currTable != null) {
-      while (currTable.firstChild) {
-        currTable.removeChild(currTable.firstChild);
-      }
+      currTable.innerHTML = "";
     }
+
     let table = document.createElement("table");
     let tableHead = document.createElement("thead");
     let tableBody = document.createElement("tbody");
@@ -221,8 +228,31 @@ function generateTournament() {
     }
     table.appendChild(tableHead);
     table.appendChild(tableBody);
-    table.classList.add("table", "mt-4", "table-scores");
-    tournamentDiv.appendChild(table);
+    table.classList.add("table", "mt-4");
+    currTable.appendChild(table);
+  }
+
+  function sortScores(teams) {
+    teams.sort((a, b) => {
+      if(a.points > b.points) {
+        return -1;
+      }
+      if(a.points < b.points) {
+        return 1;
+      }
+      if(a.points == b.points) {
+        if((a.bs - a.bl) > (b.bs - b.bl)) {
+          return -1;
+        }
+        if((a.bs - a.bl) < (b.bs - b.bl)) {
+          return 1;
+        } else {
+          return 0;
+        }
+      }
+    });
+
+    return teams;
   }
 
   generateRoundsDisplay();
